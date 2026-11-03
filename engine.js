@@ -191,7 +191,8 @@
       const a = annual(t), th = hours[l.teacher_id];
       const alloc = th > 0 ? a * l["часы_в_год"] / th : 0;
       o.fot += alloc;
-      o.fotRows.push({ row: l._row, teacher_id: l.teacher_id, staffRow: t._row, hours: l["часы_в_год"], totalHours: th, annual: a, share: th > 0 ? l["часы_в_год"] / th : 0, alloc });
+      o.fotRows.push({ row: l._row, teacher_id: l.teacher_id, staffRow: t._row, salary: t["зарплата_в_месяц_тг"], months: t["месяцев_оплаты"], charge: t["начисления_работодателя_доля"],
+        hours: l["часы_в_год"], totalHours: th, annual: a, share: th > 0 ? l["часы_в_год"] / th : 0, alloc });
     }
     const fotAnnualTotal = sum(d["Штат_ППС"].map(annual));
     const fotUnallocated = sum(d["Штат_ППС"].filter((t) => !(hours[t.teacher_id] > 0)).map(annual));

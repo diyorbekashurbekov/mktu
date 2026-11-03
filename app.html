@@ -231,6 +231,40 @@ details.ev[open] summary::after{content:"－"}
 .method ol,.method ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:9px;font-size:14.5px;color:var(--ink2)}
 footer{background:var(--alt);border-top:1px solid var(--hair);padding-block:26px 40px;font-size:12px;color:var(--muted)}
 .empty{text-align:center;color:var(--muted);padding:40px 0}
+/* «Бұл сан қайдан?» */
+.prov{cursor:pointer;text-decoration:underline dotted;text-decoration-color:color-mix(in srgb,var(--muted) 55%,transparent);text-underline-offset:5px;border-radius:4px;transition:color .12s}
+.prov:hover,.prov:focus-visible{color:var(--accent);text-decoration-color:var(--accent)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:70;opacity:0;transition:opacity .22s}
+.scrim.on{opacity:1}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(580px,100%);z-index:75;background:var(--card);color:var(--ink);box-shadow:-24px 0 64px rgba(0,0,0,.2);display:flex;flex-direction:column;transform:translateX(104%);transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer.on{transform:none}
+.dr-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:24px 26px 16px;border-bottom:1px solid var(--hair)}
+.dr-head h3{font-size:24px}
+.dr-body{overflow-y:auto;padding:20px 26px 36px;display:flex;flex-direction:column;gap:18px;min-height:0}
+.dr-val{font-size:44px;font-weight:700;letter-spacing:-.03em;line-height:1.05;overflow-wrap:anywhere}
+.dr-k{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.calc{font-family:var(--fm);font-size:12.5px;line-height:1.65;background:color-mix(in srgb,var(--ink) 5%,transparent);border-radius:12px;padding:12px 14px;overflow-x:auto;white-space:pre;color:var(--ink2);margin:0}
+.x{border:0;background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink);width:34px;height:34px;border-radius:50%;font-size:18px;line-height:1;flex:none}
+/* демо туры */
+.tour{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:78;width:min(680px,calc(100% - 32px));background:#1d1d1f;color:#f5f5f7;border-radius:22px;padding:18px 20px 16px;box-shadow:0 24px 64px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px}
+.tour .tk{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#98989d}
+.tour .tt2{font-size:19px;font-weight:700}
+.tour .say{font-size:15px;line-height:1.5;color:#d1d1d6}
+.tour .row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.tour .dots{display:flex;gap:6px}
+.tour .dots i{width:8px;height:8px;border-radius:50%;background:#f5f5f7;opacity:.25}
+.tour .dots i.on{opacity:1}
+.tour button{border:0;border-radius:980px;padding:8px 16px;font-size:14px;font-weight:600}
+.tour .nx{background:#0a84ff;color:#fff}
+.tour .pv{background:transparent;color:#f5f5f7;box-shadow:0 0 0 1px rgba(255,255,255,.35) inset}
+.spot{outline:3px solid var(--accent);outline-offset:6px;border-radius:22px;transition:outline-color .3s}
+.toast{position:fixed;left:50%;top:calc(66px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:90;background:#1d1d1f;color:#f5f5f7;padding:10px 18px;border-radius:980px;font-size:14px;box-shadow:0 8px 28px rgba(0,0,0,.25);max-width:calc(100% - 32px)}
+.nav-r{display:flex;align-items:center;gap:6px}
+.icon-btn{border:0;background:transparent;color:var(--ink2);font-size:16px;width:34px;height:34px;border-radius:50%}
+.icon-btn:hover{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+#sc-range{accent-color:var(--accent);width:min(300px,70vw)}
+.sc-val{min-width:64px;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
 </style>
 
 <nav class="bar" aria-label="Бөлімдер">
@@ -241,6 +275,10 @@ footer{background:var(--alt);border-top:1px solid var(--hair);padding-block:26px
       <li><a href="#op">БББ</a></li><li><a href="#ai">AI-талдаушы</a></li><li><a href="#anom">Аномалиялар</a></li>
       <li><a href="#scen">Сценарий</a></li><li><a href="#fc">Болжам</a></li><li><a href="#method">Әдістеме</a></li>
     </ul>
+    <div class="nav-r">
+      <button class="icon-btn" id="theme" type="button" aria-label="Ашық немесе қараңғы тақырып" title="Тақырыпты ауыстыру">◐</button>
+      <button class="btn sm" id="tour-go" type="button">Демо туры</button>
+    </div>
   </div>
 </nav>
 
@@ -256,6 +294,7 @@ footer{background:var(--alt);border-top:1px solid var(--hair);padding-block:26px
         <label class="btn" for="file">Файл таңдау</label>
         <input type="file" id="file" accept=".xlsx,.xls" hidden>
         <button class="btn ghost" id="sample">Тест файлын ашу</button>
+        <button class="btn ghost" id="tour-go2" type="button">▶ Демо туры</button>
       </div>
       <div class="status" id="status" aria-live="polite"><span class="muted">Деректер жүктелуде…</span></div>
     </div>
@@ -285,10 +324,14 @@ footer{background:var(--alt);border-top:1px solid var(--hair);padding-block:26px
         <label for="f-fac" class="note">Факультет</label>
         <select id="f-fac" class="field"></select>
       </div>
-      <div class="seg" role="group" aria-label="Нәтиже бойынша сүзгі" id="f-res">
-        <button data-v="all" aria-pressed="true">Барлығы</button><button data-v="profit" aria-pressed="false">Пайдалы</button><button data-v="loss" aria-pressed="false">Шығынды</button>
+      <div class="btnrow">
+        <div class="seg" role="group" aria-label="Нәтиже бойынша сүзгі" id="f-res">
+          <button data-v="all" aria-pressed="true">Барлығы</button><button data-v="profit" aria-pressed="false">Пайдалы</button><button data-v="loss" aria-pressed="false">Шығынды</button>
+        </div>
+        <button class="btn sm ghost" id="export" type="button">Excel есебі</button>
       </div>
     </div>
+    <p class="note" style="margin:-6px 0 16px">Кез келген соманы басыңыз: оның формуласы мен Excel жолы ашылады.</p>
     <div class="charts">
       <div class="card chart"><div class="c-head"><div><h3>Қаржылық нәтиже</h3><p class="cap">Табыс минус жалпы шығын, млн ₸</p></div>
         <div class="legend"><span><i style="background:var(--st-good)"></i>Пайда</span><span><i style="background:var(--st-bad)"></i>Шығын</span></div></div>
@@ -355,9 +398,10 @@ footer{background:var(--alt);border-top:1px solid var(--hair);padding-block:26px
     <div class="head"><span class="eyebrow">Сценарий</span><h2 class="h-lg" id="h-sc">Контингент өзгерсе ше?</h2></div>
     <div class="sc-ctl">
       <label for="sc-op" class="note">Бағдарлама</label><select id="sc-op" class="field"></select>
-      <div class="seg" role="group" aria-label="Өзгеріс" id="sc-pct">
-        <button data-v="-10" aria-pressed="false">−10%</button><button data-v="10" aria-pressed="true">+10%</button><button data-v="-20" aria-pressed="false">−20%</button><button data-v="20" aria-pressed="false">+20%</button>
+      <div class="seg" role="group" aria-label="Жылдам таңдау" id="sc-pct">
+        <button data-v="-10" aria-pressed="false">−10%</button><button data-v="10" aria-pressed="true">+10%</button>
       </div>
+      <div class="btnrow"><label for="sc-range" class="note">Контингент өзгерісі</label><input type="range" id="sc-range" min="-30" max="30" step="5" value="10"><span class="sc-val" id="sc-val">+10%</span></div>
     </div>
     <div class="grid2">
       <div class="card full"><h3 id="sc-title"></h3><p class="cap">Сценарийге дейін және кейін</p><div class="cmp" id="sc-cmp"></div></div>
@@ -429,6 +473,18 @@ footer{background:var(--alt);border-top:1px solid var(--hair);padding-block:26px
 
 <footer><div class="in">Profitability AI · ХҚТУ хакатоны, 01-трек. Деректер ұйымдастырушының синтетикалық тест файлынан алынған және университеттің нақты қаржылық жағдайын көрсетпейді.</div></footer>
 
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
+  <div class="dr-head"><div><div class="dr-k" id="dr-eyebrow"></div><h3 id="dr-title">Бұл сан қайдан?</h3></div><button class="x" id="dr-close" type="button" aria-label="Жабу">×</button></div>
+  <div class="dr-body" id="dr-body"></div>
+</aside>
+<div class="tour" id="tour" role="dialog" aria-live="polite" aria-label="Демо туры" hidden>
+  <span class="tk" id="tour-k"></span><span class="tt2" id="tour-t"></span><p class="say" id="tour-say"></p>
+  <div class="row"><div class="dots" id="tour-dots"></div>
+    <div class="btnrow" style="gap:8px"><button class="pv" id="tour-prev" type="button">Артқа</button><button class="pv" id="tour-end" type="button">Жабу</button><button class="nx" id="tour-next" type="button">Келесі</button></div></div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="engine.js"></script>
 <script src="sample-data.js"></script>
@@ -484,13 +540,13 @@ function loadBuffer(buf,name){
 }
 function setStatus(html,err,isHtml){const el=$("status");el.className="status"+(err?" err":"");el.innerHTML=isHtml?html:`<span><span class="dot"></span>${esc(html)}</span>`}
 function b64ToBuf(b64){const bin=atob(b64);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
-function loadSample(){ if(window.PAI_SAMPLE) loadBuffer(b64ToBuf(PAI_SAMPLE.b64),PAI_SAMPLE.name); else setStatus("Тест файлы табылмады. Excel-ді өзіңіз таңдаңыз.",true) }
-$("sample").addEventListener("click",loadSample);
-$("file").addEventListener("change",e=>{const f=e.target.files[0];if(f) f.arrayBuffer().then(b=>loadBuffer(b,f.name));e.target.value=""});
+function loadSample(anim){ S.animate=!!anim; if(window.PAI_SAMPLE) loadBuffer(b64ToBuf(PAI_SAMPLE.b64),PAI_SAMPLE.name); else setStatus("Тест файлы табылмады. Excel-ді өзіңіз таңдаңыз.",true) }
+$("sample").addEventListener("click",()=>loadSample(true));
+$("file").addEventListener("change",e=>{const f=e.target.files[0];if(f) f.arrayBuffer().then(b=>{S.animate=true;loadBuffer(b,f.name)});e.target.value=""});
 const drop=$("drop");
 ["dragenter","dragover"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add("over")}));
 ["dragleave","drop"].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove("over")}));
-drop.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f) f.arrayBuffer().then(b=>loadBuffer(b,f.name))});
+drop.addEventListener("drop",e=>{const f=e.dataTransfer.files[0];if(f) f.arrayBuffer().then(b=>{S.animate=true;loadBuffer(b,f.name)})});
 
 // ---------- тексеріс ----------
 const ROLE={"ОП":"Анықтамалық","Контингент":"Табыс","Штат_ППС":"ФОТ","Нагрузка_ППС":"ФОТ бөлу","Прямые_затраты":"Тікелей шығын","Общие_затраты":"Жанама шығын","Драйверы":"Бөлу драйвері","История_набора":"Болжам","Сырые_сигналы":"Тек сапа тексерісі, P&L-ге кірмейді"};
@@ -519,11 +575,11 @@ function filtered(){return S.base.ops.filter(o=>(S.fac==="all"||o.faculty===S.fa
 function renderDash(){
   const T=S.base.totals, loss=S.base.ops.filter(o=>o.result<0);
   $("kpis").innerHTML=[
-    ["Табыс",bln(T.revenue),"«Контингент» парағы, 50 жол"],
-    ["Жалпы шығын",bln(T.total),`ФОТ ${mln(T.fot)} · тікелей ${mln(T.direct)} · жанама ${mln(T.overhead)}`],
-    ["Қаржылық нәтиже",`<span class="${cls(T.result)}">${mlnS(T.result)}</span>`,`Рентабельділік ${pct(T.margin)}`],
+    ["Табыс",pv("ALL","revenue",bln(T.revenue)),"«Контингент» парағы, 50 жол"],
+    ["Жалпы шығын",pv("ALL","total",bln(T.total)),`ФОТ ${mln(T.fot)} · тікелей ${mln(T.direct)} · жанама ${mln(T.overhead)}`],
+    ["Қаржылық нәтиже",`<span class="${cls(T.result)}">${pv("ALL","result",mlnS(T.result))}</span>`,`Рентабельділік ${pct(T.margin)}`],
     ["Шығынды БББ",`<span class="neg">${loss.length}</span><span class="muted" style="font-size:.55em"> / ${S.base.ops.length}</span>`,loss.map(o=>esc(o.name)).join(", ")||"Жоқ"],
-    ["1 студенттің өзіндік құны",money(T.cps).replace(",00",""),`${int(T.students)} белсенді студент бойынша`],
+    ["1 студенттің өзіндік құны",pv("ALL","cps",money(T.cps).replace(",00","")),`${int(T.students)} белсенді студент бойынша`],
     ["Ең тиімдісі",esc([...S.base.ops].sort((a,b)=>b.result-a.result)[0].name),(()=>{const o=[...S.base.ops].sort((a,b)=>b.result-a.result)[0];return `${mlnS(o.result)} · ${pct(o.margin)}`})()]
   ].map(([k,v,s],i)=>`<div class="tile"><span class="k">${k}</span><span class="v" ${i===5?'style="font-size:clamp(22px,2.6vw,28px)"':""}>${v}</span><span class="s">${s}</span></div>`).join("");
   const facs=[...new Set(S.base.ops.map(o=>o.faculty))];
@@ -534,8 +590,8 @@ function renderDash(){
   const tb=document.querySelector("#tbl tbody");
   tb.innerHTML=rows.length?rows.map(o=>`<tr class="click ${o.op_id===S.op?"sel":""}" data-id="${esc(o.op_id)}" tabindex="0">
     <td><div class="pname">${esc(o.name)}</div><div class="sub2">${esc(o.op_id)} · ${esc(o.faculty)}</div></td>
-    <td class="n">${int(o.students)}</td><td class="n">${money(o.revenue)}</td><td class="n">${money(o.fot)}</td><td class="n">${money(o.direct)}</td><td class="n">${money(o.overhead)}</td><td class="n">${money(o.total)}</td>
-    <td class="n ${cls(o.result)}">${moneyS(o.result)}</td><td class="n ${cls(o.result)}">${pct(o.margin)}</td><td class="n">${money(o.cps)}</td></tr>`).join(""):`<tr><td colspan="10" class="empty">Сүзгіге сәйкес бағдарлама жоқ</td></tr>`;
+    <td class="n">${int(o.students)}</td><td class="n">${pv(o.op_id,"revenue",money(o.revenue))}</td><td class="n">${pv(o.op_id,"fot",money(o.fot))}</td><td class="n">${pv(o.op_id,"direct",money(o.direct))}</td><td class="n">${pv(o.op_id,"overhead",money(o.overhead))}</td><td class="n">${pv(o.op_id,"total",money(o.total))}</td>
+    <td class="n ${cls(o.result)}">${pv(o.op_id,"result",moneyS(o.result))}</td><td class="n ${cls(o.result)}">${pv(o.op_id,"margin",pct(o.margin))}</td><td class="n">${pv(o.op_id,"cps",money(o.cps))}</td></tr>`).join(""):`<tr><td colspan="10" class="empty">Сүзгіге сәйкес бағдарлама жоқ</td></tr>`;
   const sumK=k=>rows.reduce((s,o)=>s+o[k],0);
   const r=sumK("revenue"),tot=sumK("total"),st=sumK("students");
   document.querySelector("#tbl tfoot").innerHTML=rows.length?`<tr><td>Барлығы (${rows.length})</td><td class="n">${int(st)}</td><td class="n">${money(r)}</td><td class="n">${money(sumK("fot"))}</td><td class="n">${money(sumK("direct"))}</td><td class="n">${money(sumK("overhead"))}</td><td class="n">${money(tot)}</td><td class="n ${cls(r-tot)}">${moneyS(r-tot)}</td><td class="n">${pct(r?(r-tot)/r*100:null)}</td><td class="n">${money(st?tot/st:null)}</td></tr>`:"";
@@ -671,7 +727,7 @@ function renderOp(){
   $("picker").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>selectOp(b.dataset.id,false)));
   const on=$("picker").querySelector('[aria-pressed="true"]'); if(on){const pk=$("picker");pk.scrollLeft=on.offsetLeft-pk.offsetLeft-pk.clientWidth/2+on.offsetWidth/2}
   $("p-name").textContent=`${o.op_id} · ${o.name} · ${o.faculty}`;
-  $("p-big").innerHTML=`<span class="${cls(o.result)}">${mlnS(o.result)}</span>`;
+  $("p-big").innerHTML=`<span class="${cls(o.result)}">${pv(o.op_id,"result",mlnS(o.result))}</span>`;
   $("p-sub").innerHTML=`Рентабельділік <b>${pct(o.margin)}</b> · ${int(o.students)} студент · 1 студент құны ${money(o.cps)}`;
   renderWaterfall(o);
   const F=PAI.FORMULAS;
@@ -735,9 +791,10 @@ function renderScenChart(sc){
 function renderSummary(){
   const T=S.base.totals, loss=S.base.ops.filter(o=>o.result<0).length, ok=S.base.checks.every(c=>c.pass);
   const u=t=>`<small style="font-size:.45em;font-weight:600;letter-spacing:0"> ${t}</small>`;
-  const n2=(v,d)=>Math.abs(v/d).toLocaleString("ru-RU",{minimumFractionDigits:d===1e9?2:1,maximumFractionDigits:d===1e9?2:1});
-  $("summary").innerHTML=[[n2(T.revenue,1e9)+u("млрд ₸"),"жылдық табыс"],[`<span class="${cls(T.result)}">${T.result<0?"−":"+"}${n2(T.result,1e6)}${u("млн ₸")}</span>`,`нәтиже · рентабельділік ${pct(T.margin)}`],[`${loss}${u("/ "+S.base.ops.length)}`,"бағдарлама шығынды"],[`${S.an.anomalies.length}${u("аномалия")}`,ok?"ФОТ және жанама шығын тексерісі ✓":"Тексеріс өтпеді ✗"]]
-    .map(([v,l])=>`<div><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+  const f2=v=>v.toLocaleString("ru-RU",{minimumFractionDigits:2,maximumFractionDigits:2}), f1=v=>v.toLocaleString("ru-RU",{minimumFractionDigits:1,maximumFractionDigits:1}), f0=v=>String(Math.round(v));
+  const items=[[T.revenue/1e9,f2,"",u("млрд ₸"),"жылдық табыс"],[Math.abs(T.result)/1e6,f1,T.result<0?"−":"+",u("млн ₸"),`нәтиже · рентабельділік ${pct(T.margin)}`],[loss,f0,"",u("/ "+S.base.ops.length),"бағдарлама шығынды"],[S.an.anomalies.length,f0,"",u("аномалия"),ok?"ФОТ және жанама шығын тексерісі ✓":"Тексеріс өтпеді ✗"]];
+  $("summary").innerHTML=items.map(([n,f,sg,un,l],i)=>`<div><div class="v ${i===1?cls(T.result):""}">${sg}<span class="cnt" data-i="${i}">${f(n)}</span>${un}</div><div class="l">${l}</div></div>`).join("");
+  if(S.animate){S.animate=false;$("summary").querySelectorAll(".cnt").forEach(el=>{const [n,f]=items[+el.dataset.i];countUp(el,n,f)})}
 }
 function explainHtml(op_id){
   const e=PAI.explainOp(S.base,op_id); if(!e) return "";
@@ -763,7 +820,9 @@ function renderScen(){
   document.querySelectorAll("#sc-pct button").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.v===S.scPct)));
   const sc=PAI.compute(S.norm.data,{op_id:S.scOp,pct:S.scPct});
   const b=S.base.ops.find(o=>o.op_id===S.scOp), a=sc.ops.find(o=>o.op_id===S.scOp);
-  $("sc-title").textContent=`${b.name}: контингент ${S.scPct>0?"+":"−"}${Math.abs(S.scPct)}%`;
+  const sgn=S.scPct>0?"+":S.scPct<0?"−":"";
+  $("sc-title").textContent=`${b.name}: контингент ${sgn}${Math.abs(S.scPct)}%`;
+  $("sc-range").value=S.scPct; $("sc-val").textContent=`${sgn}${Math.abs(S.scPct)}%`;
   const dlt=(k,d)=>k==="margin"?(d>0?"+":"")+d.toFixed(2).replace(".",",")+" п.п.":k==="students"?(d>0?"+":"")+int(d):k==="cps"?(d>0?"+":"")+money(d).replace(/,\d\d /," "):mlnS(d);
   const item=(k,l,f)=>`<div><div class="note">${l}</div><div class="v ${k==="result"?cls(a.result):""}">${f(a[k])}</div><div class="d ${k==="cps"?cls(b[k]-a[k]):cls(a[k]-b[k])}">${dlt(k,a[k]-b[k])}</div><div class="note">база ${f(b[k])}</div></div>`;
   $("sc-cmp").innerHTML=item("students","Студент",int)+item("revenue","Табыс",mln)+item("overhead","Жанама шығын",mln)+item("result","Нәтиже",mlnS)+item("total","Жалпы шығын",mln)+item("margin","Рентабельділік",pct)+item("cps","1 студент құны",v=>money(v).replace(/,\d\d /," "))+item("fot","ФОТ (өзгермейді)",mln);
@@ -775,6 +834,7 @@ function renderScen(){
 }
 $("sc-op").addEventListener("change",e=>{S.scOp=e.target.value;renderScen()});
 document.querySelectorAll("#sc-pct button").forEach(b=>b.addEventListener("click",()=>{S.scPct=+b.dataset.v;renderScen()}));
+$("sc-range").addEventListener("input",e=>{S.scPct=+e.target.value;renderScen()});
 
 // ---------- болжам ----------
 function spark(f){
@@ -960,6 +1020,154 @@ $("explain-ai").addEventListener("click",async()=>{
   try{await claudeAsk(`${o.op_id} («${o.name}») бағдарламасын түсіндір: рентабельділікті түсіндіретін 3–5 нақты фактор және тәуекелі бар кемінде 2 басқару нұсқасы.`,wrap)}
   finally{busy=false;$("explain-ai").disabled=false}
 });
+
+// ---------- «Бұл сан қайдан?» дәлел панелі ----------
+const MLAB={revenue:"Табыс",fot:"ФОТ",direct:"Тікелей шығын",overhead:"Жанама шығын",total:"Жалпы шығын",result:"Қаржылық нәтиже",margin:"Рентабельділік",cps:"1 студенттің өзіндік құны"};
+function pv(op,m,html){return `<span class="prov" tabindex="0" role="button" data-op="${esc(op)}" data-m="${m}" title="Бұл сан қайдан?">${html}</span>`}
+const n0=v=>Number(v).toLocaleString("ru-RU",{maximumFractionDigits:2});
+function provData(op_id,m){
+  const F=PAI.FORMULAS, B=S.base, fkey={fot:"fotOp",cps:"cps"}[m]||m;
+  if(op_id==="ALL"){
+    const T=B.totals, v=T[m];
+    const calc=m==="cps"?`жалпы шығын ÷ белсенді студенттер\n= ${money(T.total)} ÷ ${int(T.students)}\n= ${money(T.cps)}`
+      :B.ops.map(o=>`${o.op_id}  ${short(o.name,24).padEnd(24)}  ${(m==="result"?moneyS(o[m]):money(o[m])).padStart(22)}`).join("\n")+`\n${"─".repeat(54)}\nБарлығы${" ".repeat(26)}${(m==="result"?moneyS(v):money(v)).padStart(22)}`;
+    return {eyebrow:`Портфель · ${B.ops.length} бағдарлама`,title:MLAB[m],value:m==="result"?moneyS(v):money(v),cls:m==="result"?cls(v):"",formula:F[fkey],calc,
+      src:["engine.js compute() — әр БББ нәтижесінің қосындысы"],q:`Портфель бойынша «${MLAB[m]}» қалай есептелді?`};
+  }
+  const o=B.ops.find(x=>x.op_id===op_id); if(!o) return null;
+  let calc="", src=[];
+  switch(m){
+    case "revenue":
+      calc=o.revRows.map(r=>`${r.course}-курс  [Контингент!${r.row}]\n  ${r.full} × ${n0(r.tariff)} + ${r.disc} × ${n0(r.tariff)} × (1 − ${n0(r.discount)}) + ${r.grant} × ${n0(r.grantFund)}\n  = ${money(r.amount)}`).join("\n")+`\n\nБарлығы = ${money(o.revenue)}`;
+      src=[`Контингент: ${o.revRows.map(r=>r.row).join(", ")}-жолдар`];break;
+    case "fot":
+      calc=o.fotRows.map(r=>`${r.teacher_id}  [Нагрузка_ППС!${r.row} · Штат_ППС!${r.staffRow}]\n  ${n0(r.salary)} × ${r.months} × (1 + ${n0(r.charge)}) × ${r.hours} ÷ ${r.totalHours}\n  = ${money(r.alloc)}`).join("\n")+`\n\nБарлығы = ${money(o.fot)}`;
+      src=[`Штат_ППС: ${o.teachers} оқытушы`,`Нагрузка_ППС: ${o.fotRows.length} жол`];break;
+    case "direct":
+      calc=o.directRows.map(r=>`${r.cost_id}  ${r.category}  [Прямые_затраты!${r.row}]\n  = ${money(r.amount)}`).join("\n")+`\n\nБарлығы = ${money(o.direct)}`;
+      src=[`Прямые_затраты: ${o.directRows.map(r=>r.row).join(", ")}-жолдар`];break;
+    case "overhead":
+      calc=o.ohRows.map(r=>`${r.center}  ${r.name}  (драйвер: ${r.driver})\n  ${n0(r.amount)} × ${n0(r.opValue)} ÷ ${n0(r.totalValue)}\n  = ${money(r.alloc)}`).join("\n")+`\n\nБарлығы = ${money(o.overhead)}`;
+      src=[`Общие_затраты: ${[...new Set(o.ohRows.map(r=>r.row))].join(", ")}-жолдар`,`Драйверы!${o.driverRow}`];break;
+    case "total":
+      calc=`ФОТ + тікелей + жанама\n= ${money(o.fot)}\n+ ${money(o.direct)}\n+ ${money(o.overhead)}\n= ${money(o.total)}`;src=["ФОТ, тікелей және жанама шығын дәлелдері"];break;
+    case "result":
+      calc=`табыс − жалпы шығын\n= ${money(o.revenue)} − ${money(o.total)}\n= ${moneyS(o.result)}`;src=["Табыс пен жалпы шығын дәлелдері"];break;
+    case "margin":
+      calc=o.revenue?`нәтиже ÷ табыс × 100\n= ${money(o.result)} ÷ ${money(o.revenue)} × 100\n= ${pct(o.margin)}`:"Табыс = 0, сондықтан рентабельділік н/д";src=["Нәтиже мен табыс"];break;
+    case "cps":
+      calc=o.students?`жалпы шығын ÷ белсенді студенттер\n= ${money(o.total)} ÷ ${int(o.students)}\n= ${money(o.cps)}`:"Студент = 0, сондықтан н/д";src=[`Драйверы!${o.driverRow} (студентов_активных)`];break;
+  }
+  const v=o[m];
+  return {eyebrow:`${o.op_id} · ${o.name}`,title:MLAB[m],value:m==="result"?moneyS(v):m==="margin"?pct(v):money(v),cls:m==="result"||m==="margin"?cls(o.result):"",formula:F[fkey]||"",calc,src,q:`${o.name}: «${MLAB[m]}» қалай есептелді және неге осындай?`};
+}
+let lastFocus=null;
+function openProv(op_id,m){
+  const d=provData(op_id,m); if(!d) return;
+  lastFocus=document.activeElement;
+  $("dr-eyebrow").textContent=d.eyebrow; $("dr-title").textContent=d.title;
+  const body=$("dr-body"); body.innerHTML=`<div class="dr-val ${d.cls}"></div>
+    <div><div class="dr-k">Формула</div><div class="formula"></div></div>
+    <div><div class="dr-k">Есептеу қадамдары</div><pre class="calc"></pre></div>
+    <div><div class="dr-k">Дереккөз</div><ul class="explain" style="margin-top:8px"></ul></div>
+    <div class="btnrow"><button class="btn sm" id="dr-ask" type="button">Бұл туралы AI-ден сұрау</button></div>`;
+  body.querySelector(".dr-val").textContent=d.value;
+  body.querySelector(".formula").textContent=d.formula;
+  body.querySelector(".calc").textContent=d.calc;
+  const ul=body.querySelector("ul"); d.src.forEach(s=>{const li=document.createElement("li");li.textContent=s;ul.appendChild(li)});
+  $("dr-ask").onclick=()=>{closeProv();$("ask").value=d.q;$("ai").scrollIntoView({behavior:reduced()?"auto":"smooth"});ask()};
+  const dr=$("drawer"), sc=$("scrim"); dr.hidden=false; sc.hidden=false;
+  requestAnimationFrame(()=>{dr.classList.add("on");sc.classList.add("on");$("dr-close").focus()});
+}
+function closeProv(){
+  const dr=$("drawer"), sc=$("scrim"); if(dr.hidden) return;
+  dr.classList.remove("on"); sc.classList.remove("on");
+  setTimeout(()=>{dr.hidden=true;sc.hidden=true},reduced()?0:300);
+  if(lastFocus&&lastFocus.focus) lastFocus.focus();
+}
+$("dr-close").addEventListener("click",closeProv);
+$("scrim").addEventListener("click",closeProv);
+document.addEventListener("click",e=>{const p=e.target.closest&&e.target.closest(".prov");if(p){e.stopPropagation();e.preventDefault();openProv(p.dataset.op,p.dataset.m)}},true);
+document.addEventListener("keydown",e=>{
+  const p=e.target.closest&&e.target.closest(".prov");
+  if(p&&(e.key==="Enter"||e.key===" ")){e.stopPropagation();e.preventDefault();openProv(p.dataset.op,p.dataset.m);return}
+  if(e.key==="Escape"){ if(!$("drawer").hidden) closeProv(); else if(!$("tour").hidden) endTour(); }
+  if(!$("tour").hidden&&$("drawer").hidden&&!/input|textarea|select/i.test(e.target.tagName)){ if(e.key==="ArrowRight"){e.preventDefault();tourGo(1)} if(e.key==="ArrowLeft"){e.preventDefault();tourGo(-1)} }
+},true);
+
+// ---------- демо туры ----------
+const TOUR=[
+  {t:"Жүктеу және тексеріс",el:"checks",spot:"#check-tiles",run(){loadSample(true)},
+   say:"«Ұйымдастырушылардың Excel файлын қолмен түзетусіз жүктедік. 9 парақтың бәрі табылды. Бөлінген ФОТ 736 465 200 теңге, жанама шығын дәл 500 миллион. Екі тексеріс те өтті.»"},
+  {t:"Дашборд",el:"dash",spot:"#tbl",run(){S.res="loss";S.op="OP-004";renderDash();renderOp()},
+   say:"«“Шығынды” сүзгісін қостым: 12 бағдарламаның 3-еуі шығынды. Кез келген соманы бассаңыз, оның формуласы мен Excel жолы ашылады. Әр теңгенің дәлелі бар.»"},
+  {t:"AI сұрағы",el:"ai",spot:".chat",run(){if(!busy){$("ask").value="Неге «Прикладная математика» нәтижесі осындай?";ask()}},
+   say:"«AI-ден “Неге Прикладная математика шығынды?” деп сұраймыз. Ол санды өзі ойлап таппайды: есептеу құралын шақырып, факторларды, формуланы және Excel жолын көрсетеді.»"},
+  {t:"Табылған қате",el:"anom",spot:"#an-tbl",
+   say:"«“Сырые_сигналы” парағындағы 6 қатенің алтауы да табылды: қайталанған ID, жоқ бағдарлама, теріс мән, 135%, бос мән және 2099 жыл. Есепке әсері — 0 теңге.»"},
+  {t:"Сценарий +10%",el:"scen",spot:"#sc-cmp",run(){S.scOp="OP-001";S.scPct=10;renderScen()},
+   say:"«Информатикаға студент 10% көбейсе, нәтиже 34,1 миллион теңгеге өседі. Жанама шығын басқа бағдарламалар арасында қайта бөлінеді, ал жалпы сомасы бәрібір 500 миллион.»"}
+];
+let tourI=-1;
+function tourShow(i){
+  tourI=Math.max(0,Math.min(TOUR.length-1,i)); const s=TOUR[tourI];
+  document.querySelectorAll(".spot").forEach(x=>x.classList.remove("spot"));
+  if(s.run) s.run();
+  $("tour").hidden=false;
+  $("tour-k").textContent=`Қадам ${tourI+1} / ${TOUR.length} · не айту керек`;
+  $("tour-t").textContent=s.t; $("tour-say").textContent=s.say;
+  $("tour-dots").innerHTML=TOUR.map((_,k)=>`<i class="${k===tourI?"on":""}"></i>`).join("");
+  $("tour-prev").disabled=tourI===0; $("tour-next").textContent=tourI===TOUR.length-1?"Аяқтау":"Келесі";
+  $(s.el).scrollIntoView({behavior:reduced()?"auto":"smooth",block:"start"});
+  const sp=document.querySelector(s.spot); if(sp){const target=sp.closest(".tbl-wrap,.card,.tiles,.chat")||sp;target.classList.add("spot")}
+}
+function tourGo(d){ if(tourI+d>=TOUR.length) return endTour(); tourShow(tourI+d) }
+function endTour(){ $("tour").hidden=true; tourI=-1; document.querySelectorAll(".spot").forEach(x=>x.classList.remove("spot")) }
+$("tour-go").addEventListener("click",()=>tourShow(0));
+$("tour-go2").addEventListener("click",()=>tourShow(0));
+$("tour-next").addEventListener("click",()=>tourGo(1));
+$("tour-prev").addEventListener("click",()=>tourGo(-1));
+$("tour-end").addEventListener("click",endTour);
+
+// ---------- Excel есебі ----------
+let toastT=null;
+function toast(t){const el=$("toast");el.textContent=t;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true},3200)}
+function buildWorkbook(){
+  const B=S.base, wb=XLSX.utils.book_new(), add=(name,rows,cols)=>{const ws=XLSX.utils.aoa_to_sheet(rows);if(cols)ws["!cols"]=cols.map(w=>({wch:w}));XLSX.utils.book_append_sheet(wb,ws,name)};
+  const R=v=>v==null||!Number.isFinite(v)?"н/д":Math.round(v*100)/100;
+  add("P&L",[["op_id","Бағдарлама","Факультет","Белсенді студент","Табыс, ₸","ФОТ, ₸","Тікелей шығын, ₸","Жанама шығын, ₸","Жалпы шығын, ₸","Қаржылық нәтиже, ₸","Рентабельділік, %","1 студент құны, ₸"],
+    ...B.ops.map(o=>[o.op_id,o.name,o.faculty,R(o.students),R(o.revenue),R(o.fot),R(o.direct),R(o.overhead),R(o.total),R(o.result),R(o.margin),R(o.cps)]),
+    ["Барлығы","","",R(B.totals.students),R(B.totals.revenue),R(B.totals.fot),R(B.totals.direct),R(B.totals.overhead),R(B.totals.total),R(B.totals.result),R(B.totals.margin),R(B.totals.cps)]],[9,26,28,10,16,16,16,16,16,16,12,14]);
+  add("Тексерістер",[["Тексеріс","Күтілген","Нақты","Айырма","Нәтиже"],...B.checks.map(c=>[c.label,R(c.expected),R(c.actual),R(c.diff),c.pass?"өтті":"өтпеді"]),[],["Деректер сапасы (ақаулы жолдар)"],...S.norm.issues.map(i=>[i.level,i.sheet,i.row||"",i.msg])],[52,18,18,12,10]);
+  add("Аномалиялар",[["source_row_id","Excel жолы","op_id","Көрсеткіш","Мән","Түрі","Неге күдікті","Не істеу керек"],...S.an.anomalies.map(a=>[a.source_row_id,a.row,a.op_id,a.metric,a.value==null?"":a.value,a.type,a.issues.map(i=>i.why).join(" "),a.issues.map(i=>i.action).join(" ")]),[],...S.an.info.map(t=>[t])],[12,10,9,15,8,22,60,50]);
+  const sc=PAI.compute(S.norm.data,{op_id:S.scOp,pct:S.scPct});
+  add("Сценарий",[[`Сценарий: ${S.scOp}, контингент ${S.scPct>0?"+":""}${S.scPct}%`],["op_id","Бағдарлама","Нәтиже: база, ₸","Нәтиже: сценарий, ₸","Өзгеріс, ₸","Жанама: база, ₸","Жанама: сценарий, ₸"],
+    ...sc.ops.map(o=>{const b=B.ops.find(x=>x.op_id===o.op_id);return [o.op_id,o.name,R(b.result),R(o.result),R(o.result-b.result),R(b.overhead),R(o.overhead)]}),
+    [],["Жорамалдар: табыс студент санына пропорционал; ФОТ пен тікелей шығын өзгермейді; «students» драйверлі жанама орталықтар қайта бөлінеді; аудан мен зертхана драйверлері өзгермейді."]],[9,26,18,18,16,18,18]);
+  add("Болжам",[["op_id","Бағдарлама","Зачислено (3 жыл)","Болжам","80% аралық: төмен","80% аралық: жоғары","Конверсия, %"],...S.fc.filter(f=>!f.insufficient).map(f=>[f.op_id,f.name,f.enr.values.join(" → "),R(f.enr.point),f.enr.exactFit?"бағаланбайды":R(f.enr.lo),f.enr.exactFit?"бағаланбайды":R(f.enr.hi),R(f.conv*100)])],[9,26,18,10,16,16,12]);
+  add("Формулалар",[["Көрсеткіш","Формула"],...Object.entries(PAI.FORMULAS).map(([k,v])=>[k,v]),[],[`Файл: ${S.file?S.file.name:""}`],[`Жасалды: ${new Date().toLocaleString("ru-RU")}`],["Деректер синтетикалық. Profitability AI · ХҚТУ хакатоны, Кейс 01."]],[14,110]);
+  return wb;
+}
+$("export").addEventListener("click",async()=>{
+  if(!S.base) return toast("Алдымен Excel файлын жүктеңіз");
+  const wb=buildWorkbook(), name=`Profitability_AI_${new Date().toISOString().slice(0,10)}.xlsx`;
+  const dl=(window.claude&&window.claude.use)?await window.claude.use("downloads").catch(()=>null):null;
+  if(dl){
+    try{await dl.save({filename:name,data:new Blob([XLSX.write(wb,{bookType:"xlsx",type:"array"})])});toast("Есеп сақталды: 6 парақ")}
+    catch(e){toast(e&&e.code==="declined"?"Жүктеу тоқтатылды":e&&e.code==="rate_limited"?"Бір сәт күтіп, қайталаңыз":"Бұл көріністе файл жүктеу қолжетімсіз")}
+  } else { try{XLSX.writeFile(wb,name);toast("Есеп жүктелді: 6 парақ")}catch(e){toast("Файлды жүктеу мүмкін болмады")} }
+});
+
+// ---------- санның өсіп шығуы, тақырып ----------
+function countUp(el,to,fmt){
+  if(reduced()){el.textContent=fmt(to);return}
+  const t0=performance.now(),d=1100;
+  const step=t=>{const k=Math.min(1,(t-t0)/d),e=1-Math.pow(1-k,3);el.textContent=fmt(to*e);if(k<1)requestAnimationFrame(step)};
+  requestAnimationFrame(step);
+}
+function setTheme(t){const r=document.documentElement;if(t)r.setAttribute("data-theme",t);else r.removeAttribute("data-theme");try{localStorage.setItem("pai-theme",t||"")}catch(e){}}
+try{const t=localStorage.getItem("pai-theme");if(t)setTheme(t)}catch(e){}
+$("theme").addEventListener("click",()=>{const r=document.documentElement,cur=r.getAttribute("data-theme")||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");setTheme(cur==="dark"?"light":"dark")});
 
 // ---------- жалпы ----------
 function renderAll(){renderSummary();renderChecks();renderDash();renderOp();renderAnom();renderScen();renderFc()}
