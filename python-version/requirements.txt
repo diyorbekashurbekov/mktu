@@ -1,0 +1,2 @@
+# Not required to run the app (stdlib only). Optional: Claude layer for the AI analyst.
+anthropic>=1.0

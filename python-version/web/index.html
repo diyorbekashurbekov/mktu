@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="kk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profitability AI</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23256abf'/%3E%3Cpath d='M8 22V14M14 22V9M20 22v-6M26 22V11' stroke='white' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 22V14M14 22V9M20 22v-6M26 22V11" /></svg></div>
+      <div>
+        <h1>Profitability AI</h1>
+        <p class="sub">Білім беру бағдарламаларының рентабельділігі · <span id="study-year">2025–2026</span> · <b>синтетикалық деректер</b></p>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="file-chip" id="file-chip" title="Жүктелген файл">
+        <span class="dot" id="file-dot"></span><span id="file-name">—</span>
+      </div>
+      <label class="btn primary" for="file-input">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-5 5m5-5 5 5M5 20h14"/></svg>
+        Excel жүктеу
+      </label>
+      <input type="file" id="file-input" accept=".xlsx,.xlsm" hidden>
+      <button class="btn" id="btn-demo" type="button">Демо деректер</button>
+      <a class="btn" id="btn-export" href="/api/export.csv">CSV</a>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs">
+    <button role="tab" data-tab="dashboard" aria-selected="true">Дашборд</button>
+    <button role="tab" data-tab="op">ОП талдауы</button>
+    <button role="tab" data-tab="quality">Деректер сапасы <span class="badge" id="badge-quality"></span></button>
+    <button role="tab" data-tab="scenario">«Не болса?» сценарий</button>
+    <button role="tab" data-tab="forecast">Қабылдау болжамы</button>
+    <button role="tab" data-tab="ai">ИИ-талдаушы</button>
+    <button role="tab" data-tab="method">Әдістеме</button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <main>
+    <!-- DASHBOARD -->
+    <section id="tab-dashboard" class="panel active">
+      <div class="kpis" id="kpis"></div>
+      <div class="filters">
+        <label>Факультет
+          <select id="f-faculty"><option value="">Барлық факультеттер</option></select>
+        </label>
+        <div class="seg" role="group" aria-label="Пайдалылық сүзгісі" id="f-status">
+          <button data-v="" class="on">Барлығы</button>
+          <button data-v="profit">Пайдалы</button>
+          <button data-v="loss">Шығынды</button>
+        </div>
+        <label>Сұрыптау
+          <select id="f-sort">
+            <option value="result">Қаржылық нәтиже</option>
+            <option value="margin">Рентабельділік</option>
+            <option value="revenue">Кіріс</option>
+            <option value="total_cost">Жалпы шығын</option>
+            <option value="cost_per_student">Бір студенттің құны</option>
+            <option value="fot_per_student">Бір студентке ФОТ</option>
+            <option value="students">Студенттер</option>
+          </select>
+        </label>
+        <span class="filter-note" id="filter-note"></span>
+      </div>
+      <div class="grid2">
+        <figure class="card chart-card">
+          <figcaption><h3>Қаржылық нәтиже</h3><p>Кіріс − (ФОТ + тікелей + жанама), ₸</p></figcaption>
+          <div class="chart" id="chart-result"></div>
+        </figure>
+        <figure class="card chart-card">
+          <figcaption><h3>Шығын құрылымы және кіріс</h3><p>Белгі ▏— кіріс; сызық одан асса — шығын</p></figcaption>
+          <div class="legend" id="legend-cost"></div>
+          <div class="chart" id="chart-cost"></div>
+        </figure>
+      </div>
+      <figure class="card chart-card">
+        <figcaption><h3>Бір студентке: кіріс пен өзіндік құн</h3><p>Диагональдан төмен — кіріс құннан жоғары (шығынын жабады); жоғары — шығынды</p></figcaption>
+        <div class="chart" id="chart-scatter"></div>
+      </figure>
+      <div class="card">
+        <div class="card-head"><h3>Барлық ОП бойынша есеп</h3><span class="muted">Жолды басыңыз — толық талдау ашылады</span></div>
+        <div class="table-wrap"><table class="data" id="pnl-table"></table></div>
+      </div>
+    </section>
+
+    <!-- OP DETAIL -->
+    <section id="tab-op" class="panel">
+      <div class="filters">
+        <label>Бағдарлама <select id="op-select"></select></label>
+        <button class="btn primary" id="btn-explain" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg>
+          ОП-ны түсіндіру
+        </button>
+        <button class="btn" id="btn-op-scenario" type="button">+10% сценарий</button>
+      </div>
+      <div id="op-detail"></div>
+    </section>
+
+    <!-- QUALITY -->
+    <section id="tab-quality" class="panel">
+      <div id="quality"></div>
+    </section>
+
+    <!-- SCENARIO -->
+    <section id="tab-scenario" class="panel">
+      <div class="card scenario-controls">
+        <div class="sc-row">
+          <label>Бағдарлама <select id="sc-op"></select></label>
+          <div class="seg" role="group" aria-label="Жылдам таңдау" id="sc-quick">
+            <button data-v="-10">−10%</button>
+            <button data-v="10" class="on">+10%</button>
+            <button data-v="20">+20%</button>
+          </div>
+          <label class="slider">Контингент өзгерісі: <b id="sc-pct-label">+10%</b>
+            <input type="range" id="sc-pct" min="-50" max="50" step="1" value="10">
+          </label>
+        </div>
+        <details class="advanced">
+          <summary>Кеңейтілген модель (айнымалы шығындар)</summary>
+          <div class="sc-row">
+            <label class="slider">ФОТ-тың айнымалы үлесі: <b id="sc-fot-label">0%</b>
+              <input type="range" id="sc-fot" min="0" max="100" step="5" value="0">
+            </label>
+            <label class="slider">Тікелей шығынның айнымалы үлесі: <b id="sc-dir-label">0%</b>
+              <input type="range" id="sc-dir" min="0" max="100" step="5" value="0">
+            </label>
+          </div>
+          <p class="muted">0% = кейстің базалық моделі. Мән қойылса, ереже анық көрсетіледі: шығын × (1 + Δ × үлес).</p>
+        </details>
+      </div>
+      <div id="scenario"></div>
+    </section>
+
+    <!-- FORECAST -->
+    <section id="tab-forecast" class="panel">
+      <div id="forecast"></div>
+    </section>
+
+    <!-- AI -->
+    <section id="tab-ai" class="panel">
+      <div class="ai-layout">
+        <div class="card chat">
+          <div class="card-head">
+            <h3>ИИ-талдаушы</h3>
+            <span class="mode" id="ai-mode"></span>
+          </div>
+          <div class="chat-log" id="chat-log" aria-live="polite"></div>
+          <form class="chat-input" id="chat-form">
+            <input id="chat-q" type="text" autocomplete="off" maxlength="500"
+                   placeholder="Сұрақ қойыңыз: «Қандай ОП шығынды?» немесе «Почему у прикладной математики такой результат?»">
+            <button class="btn primary" type="submit">Сұрау</button>
+          </form>
+        </div>
+        <aside class="card">
+          <h3>Сұрақ үлгілері</h3>
+          <div class="chips" id="chips"></div>
+          <h3 class="mt">Қалай жұмыс істейді</h3>
+          <ol class="howto">
+            <li>Сұрақ есептеу құралына (tool) бағытталады: рейтинг, ОП түсіндіру, сценарий, аномалиялар, болжам.</li>
+            <li>Барлық сомаларды Python коды есептейді — LLM сан ойлап шығармайды.</li>
+            <li>Claude қосулы болса, ол тек құралды таңдап, мәтінді құрастырады; мәтіндегі әр сан құрал нәтижесімен салыстырылады.</li>
+            <li>Әр жауапта: формула, дереккөз (парақ!жол) және болжамдар.</li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section id="tab-method" class="panel">
+      <div id="method"></div>
+    </section>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+  <footer class="foot">Profitability AI · хакатон прототипі · барлық бағдарламалар, тарифтер, жалақылар мен сомалар синтетикалық (ойдан құрастырылған)</footer>
+  <script src="app.js"></script>
+</body>
+</html>
